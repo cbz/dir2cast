@@ -1,4 +1,4 @@
-dir2cast by Ben XO v1.12 (2018-03-22)
+dir2cast by Ben XO v1.22 (2020-01-19)
 ================================================================================
 
 https://github.com/ben-xo/dir2cast/
@@ -15,19 +15,28 @@ as your PodCast URL.
 
 Features:
 
-* For 99% of things, NO CONFIGURATION IS NECESSARY.
+* For 99% of things, NO CONFIGURATION IS NECESSARY. All you have to do is upload
+  dir2cast to your web server, then start uploading media files, and it will
+  pick up most of the podcast text straight from the tags in the file (such as
+  the artist, title and comment tags.)
 
-* dir2cast will automatically use the ID3 fields from your MP3s for the Author, 
-  Title, etc. ID3v2 is supported. (Uses bundled getID3 lib).
+* supports MP3, MP4, and M4A files
+
+* dir2cast will automatically use the ID3 fields from your files for the Author, 
+  Title, etc. ID3v2 is supported, as are the regular tags found in MP4 and M4A
+  files. (Uses getID3, which is bundled with dir2cast.)
+
+* dir2cast will automatically use the cover art embedded in your file as well. 
 
 * The generated feed is cached (in the supplied 'temp' folder, or anywhere else
-  that you want) and only updated if something in the directory changes.
+  that you want) and only updated if something in the directory changes - so
+  the feed will load fast and put minimal strain on your web server. It only
+  regenerates the feed when a new episode is uploaded.
 
-* Almost-full support for iTunes podcast tags. (Not supported: block, explicit,
-  new-feed-url, per-item keywords).
+* Comprehensive support for iTunes podcast tags.
 
 * iTunes 'image' supported: just drop a file called itunes_image.jpg in the same
-  folder as your MP3s.
+  folder as your media files.
 
 * RSS Description, iTunes Subtitle and iTunes Summary can be set by dropping
   files named description.txt, itunes_subtitle.txt and itunes_summary.txt 
@@ -35,13 +44,23 @@ Features:
   also set these in the config).
 
 * You can set a per-file iTunes Summary by creating a text file with the same
-  name as the MP3 (e.g. for file.mp3, create file.txt).
+  name as the media file (e.g. for file.mp3, create file.txt).
+
+
+QUICK HOW TO GUIDES
+================================================================================
+
+Here are links to a couple of guides on how to set up a podcast, using dir2cast.
+Thanks to the people who wrote these guides!
+
+* https://sys.re/files/itunes/ (by nilicule)
+* https://www.reddit.com/r/selfhosted/comments/ae37kf/ (by u/wagesj45)
 
 
 REQUIREMENTS
 ================================================================================
 
-dir2cast requires PHP 5.1.
+dir2cast requires PHP 5.3. It requires the XML extension to be enabled.
 
 dir2cast makes use of getID3 by James Heinrich & Allan Hansen, although it does
 not require the whole thing. A cut down version of getID3 is supplied at
@@ -56,14 +75,29 @@ INSTALLATION
 Please note: the config file will make more sense if you read all of this README
 before trying the installation instructions.
 
+dir2cast is quite flexible but the general idea is that you add cover art and
+tags to your media files - mp3, mp4 or m4a currently supported - and then the
+podcast that it generates uses the tags from your files.
+
 Step 1. Edit dir2cast.ini to your taste.
 Step 2. Upload dir2cast.php and dir2cast.ini to the web server.
 Step 3. Upload getID3 to a folder called 'getID3'. (You can download getID3 from
         the same place as dir2cast.)
+Step 4. Upload a media file to the same folder as dir2cast.php
+Step 5. Go to the URL for dir2cast.php - e.g. http://example.com/dir2cast.php
+Step 6. This is your podcast! Check it's valid at https://podba.se/validate/
+        You may need to edit dir2cast.ini some more to get the text you want.
+        The generated feed is cached. It will regenerate if you add a new media
+        file, but if you want to force a regeneration delete the files from 
+        the "temp" folder that is created.
+
+
+TIPS
+================================================================================
 
 
 CASTING SEVERAL FOLDERS FROM ONE DIR2CAST.PHP
-================================================================================
+--------------------------------------------------------------------------------
 
 If you have more than one folder of MP3s that you are casting, you can serve 
 them all from a single install of dir2cast.php, and customise dir2cast.ini for 
@@ -88,7 +122,7 @@ http://www.mysite.com/dir2cast/dir2cast.php?dir=cast2 .
 
 
 "PRETTY" URLS FOR YOUR PODCASTS
-================================================================================
+--------------------------------------------------------------------------------
 
 This hint requires your web server to be Apache with 'mod_rewrite' enabled.
 
@@ -151,6 +185,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 HISTORY
 ================================================================================
 
+1.22 2020-01-19 iTunes categories now use comma instead of pipe as a separator.
+				Characters which are valid UTF-8 but invalid XML are removed.
+				Most ini examples updated to use double quotes.
+1.21 2020-01-10 Uncache the podcast when the configuration changes, making it
+                quicker and easier to experiment with settings.
+1.20 2019-12-30 Cache files per media-file, which speeds up large podcasts
+                Upgrade bundled getID3 with better MP4 support
+                Support for <itunes:explicit> tag
+                General speed improvements
+1.19 2019-12-21 Extract cover art from MP4 and M4A files.
+1.18 2019-12-21 Bugfix for image URLs. Better CLI options.
+1.17 2019-12-21 Automatically extract cover art from the files
+1.16 2019-12-16 Other fixes for PHP7.x
+1.15 2019-12-16 Other fixes for PHP7.x
+1.15 2019-12-15 Upgrade getID3 to 1.9.18-201911300717 - fixes PHP7.4 support
+1.14 2019-12-12 Support for mp4 videos
+1.13 2019-12-11 Suppress deprecation warnings, as both dir2cast and getID3
+                trigger the error handler on newer PHPs
 1.12 2018-03-22 Switched to de-facto text/xml content-type
                 Suggested by RobertBozic
 1.11 2018-02-28 Added charset=utf-8 to the Content-type header.
